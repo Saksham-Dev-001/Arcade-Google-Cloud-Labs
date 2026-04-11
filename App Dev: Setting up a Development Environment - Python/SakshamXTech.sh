@@ -43,7 +43,7 @@ gcloud compute firewall-rules create allow-http --action=ALLOW --direction=INGRE
 
 sleep 10
 
-cat > techcode.sh <<'EOF_CP'
+cat > SakshamXTech.sh <<'EOF_CP'
 sudo apt-get update
 sudo apt-get install git -y
 sudo apt-get install python3-setuptools python3-dev build-essential -y
