@@ -59,7 +59,7 @@ EOF_CP
 
 sleep 10
 
-gcloud compute scp techcode.sh dev-instance:/tmp --project="$DEVSHELL_PROJECT_ID" --zone="$ZONE" --quiet
+gcloud compute scp SakshamXTech.sh dev-instance:/tmp --project="$DEVSHELL_PROJECT_ID" --zone="$ZONE" --quiet
 
 gcloud compute ssh dev-instance --project="$DEVSHELL_PROJECT_ID" --zone="$ZONE" --quiet --command='bash /tmp/SakshamXTech.sh'
 # Final message
