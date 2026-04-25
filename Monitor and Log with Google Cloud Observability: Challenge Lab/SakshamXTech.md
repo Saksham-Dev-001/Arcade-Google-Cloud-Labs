@@ -18,7 +18,7 @@ export METRIC=
 export VALUE=
 ```
 ```bash
-wget -O SakshamXTech.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Monitor%20and%20Log%20with%20Google%20Cloud%20Observability%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
