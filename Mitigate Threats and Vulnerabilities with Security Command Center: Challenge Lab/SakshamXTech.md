@@ -15,14 +15,14 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-wget -O SakshamXTech.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Mitigate%20Threats%20and%20Vulnerabilities%20with%20Security%20Command%20Center%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
 ```
 * **Reserve Static External IP** address name **`static-ip`**
 ```bash
-wget -O SakshamXTech2.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech2.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Mitigate%20Threats%20and%20Vulnerabilities%20with%20Security%20Command%20Center%3A%20Challenge%20Lab/SakshamXTech2.sh"
 sed -i 's/\r$//' SakshamXTech2.sh
 chmod +x SakshamXTech2.sh
 bash SakshamXTech2.sh
