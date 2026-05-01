@@ -15,7 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 ## Task 1:
 ```bash
-wget -O SakshamXTech.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Migrate%20MySQL%20Data%20to%20Cloud%20SQL%20Using%20Database%20Migration%20Service%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
