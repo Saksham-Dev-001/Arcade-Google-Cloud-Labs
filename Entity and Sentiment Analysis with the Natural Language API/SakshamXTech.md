@@ -15,7 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-wget -O SakshamXTech.sh "URL"
+wget -O SakshamXTech.sh "Uhttps://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Entity%20and%20Sentiment%20Analysis%20with%20the%20Natural%20Language%20API/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
