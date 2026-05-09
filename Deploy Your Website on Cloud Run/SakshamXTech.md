@@ -34,7 +34,7 @@ bash SakshamXTech.sh
     <img src="https://img.shields.io/badge/Subscribe-SakshamXTech-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel">
   </a>
 
-  <a href="https://www.linkedin.com/in/saksham-sharma-674a32294/" style="margin: 0 6px; display: inline-block;">
+  <a href="https://www.linkedin.com/in/saksham-sharma-674a32294" style="margin: 0 6px; display: inline-block;">
     <img src="https://img.shields.io/badge/LinkedIn-Saksham%20Sharma-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Profile">
   </a>
 
