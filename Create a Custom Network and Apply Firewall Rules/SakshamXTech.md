@@ -15,7 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-wget -O SakshamXTech.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Create%20a%20Custom%20Network%20and%20Apply%20Firewall%20Rules/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
