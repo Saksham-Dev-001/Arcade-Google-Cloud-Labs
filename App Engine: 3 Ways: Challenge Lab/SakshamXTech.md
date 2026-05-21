@@ -14,7 +14,7 @@
 
 ## ☁️ Run in Cloud Shell:
 ```bash
-wget -O SakshamXTech.sh "URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/App%20Engine%3A%203%20Ways%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
