@@ -1,4 +1,4 @@
-# 🌐 App Dev: Setting up a Development Environment - Python || GSP183 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.cloudskillsboost.google/games/6512/labs/40872)
+# 🌐 App Engine: 3 Ways: Challenge Lab || ARC112 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.skills.google/games/7175/labs/44456)
 
 ## ⚠️ Disclaimer ⚠️
 
@@ -14,10 +14,7 @@
 
 ## ☁️ Run in Cloud Shell:
 ```bash
-export ZONE=
-```
-```bash
-wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/App%20Dev%3A%20Setting%20up%20a%20Development%20Environment%20-%20Python/SakshamXTech.sh"
+wget -O SakshamXTech.sh "URL"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
