@@ -14,19 +14,22 @@ BOLD_TEXT=$'\033[1m'
 UNDERLINE_TEXT=$'\033[4m'
 
 clear
-echo "${CYAN_TEXT}${BOLD_TEXT}=======================================${RESET_FORMAT}"
-echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech - INITIATING EXECUTION...      ${RESET_FORMAT}"
-echo "${CYAN_TEXT}${BOLD_TEXT}=======================================${RESET_FORMAT}"
+
+# Welcome message
+echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
+echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech - INITIATING EXECUTION...  ${RESET_FORMAT}"
+echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
 echo
 
 gcloud auth list
 
-# ── Project & fixed region (lab requires us-east4) ──────────────────────────
+# ── Project & fixed region ──────────────────────────
 gcloud config set project $(gcloud projects list \
   --format='value(PROJECT_ID)' --filter='qwiklabs-gcp')
 
 export DEVSHELL_PROJECT_ID=$(gcloud config get-value project)
-export REGION="us-east4"   # Lab spec: "Add location us-east4"
+export REGION=$(gcloud compute project-info describe \
+--format="value(commonInstanceMetadata.items[google-compute-default-region])")
 
 export DATASET_SERVICE=netflix-dataset-service
 export FRONTEND_STAGING_SERVICE=frontend-staging-service
@@ -47,9 +50,9 @@ gcloud services enable \
 
 # ── Task 1 : Create Firestore database ───────────────────────────────────────
 echo
-echo "${CYAN_TEXT}${BOLD_TEXT}[Task 1] Creating Firestore database in us-east4...${RESET_FORMAT}"
+echo "${CYAN_TEXT}${BOLD_TEXT}[Task 1] Creating Firestore database in ${REGION}...${RESET_FORMAT}"
 gcloud firestore databases create \
-  --location=us-east4 \
+  --location=$REGION \
   --project=$DEVSHELL_PROJECT_ID
 sleep 10
 
@@ -121,58 +124,48 @@ echo
 # ── Task 5 : Deploy staging frontend ─────────────────────────────────────────
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}[Task 5] Building & deploying staging frontend...${RESET_FORMAT}"
+
+gcloud artifacts repositories create frontend-repo \
+    --repository-format=docker \
+    --location=$REGION \
+    --description="Repository for Frontend images" || true
+
 cd ~/pet-theory/lab06/firebase-frontend
-npm install && npm run build
+gcloud builds submit --tag ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/frontend-repo/frontend-staging:0.1 .
 
-gcloud builds submit \
-  --tag ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/$AR_REPO/frontend-staging:0.1 .
-
-gcloud run deploy $FRONTEND_STAGING_SERVICE \
-  --image ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/$AR_REPO/frontend-staging:0.1 \
-  --set-env-vars REST_API_SERVICE=$SERVICE_URL \
-  --allow-unauthenticated \
-  --max-instances=1 \
-  --region=$REGION
-
-STAGING_URL=$(gcloud run services describe $FRONTEND_STAGING_SERVICE \
-  --region=$REGION --format='value(status.url)')
-echo "${GREEN_TEXT}Staging frontend URL: $STAGING_URL${RESET_FORMAT}"
-
+gcloud run deploy frontend-staging-service \
+    --image=${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/frontend-repo/frontend-staging:0.1 \
+    --platform=managed \
+    --region=$REGION \
+    --allow-unauthenticated \
+    --max-instances=1
+    
 # ── Task 6 : Deploy production frontend ──────────────────────────────────────
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}[Task 6] Updating app.js and deploying production frontend...${RESET_FORMAT}"
+
 cd ~/pet-theory/lab06/firebase-frontend/public
 
-# Patch app.js: replace the fetch URL so the year is appended to SERVICE_URL
-# The original demo code typically fetches a static/demo URL; we point it at the real API.
-sed -i "s|const REST_API_SERVICE = \".*\"|const REST_API_SERVICE = \"$SERVICE_URL\"|g" app.js
+sed -i "s|https://netflix-dataset-service-abcdef-uc.a.run.app|$SERVICE_URL|g" app.js
 
-# Also ensure the fetch call appends the selected year  ─────────────────────
-# Pattern found in the sample: fetch(SERVICE_URL)  →  fetch(SERVICE_URL + '/' + year)
-sed -i "s|fetch(REST_API_SERVICE)|fetch(REST_API_SERVICE + '/' + selectedYear)|g" app.js
-sed -i "s|fetch(SERVICE_URL)|fetch(SERVICE_URL + '/' + selectedYear)|g"           app.js
+cd ..
 
-echo "${YELLOW_TEXT}Updated app.js:${RESET_FORMAT}"
-cat app.js | grep -E "REST_API_SERVICE|fetch" | head -10
-
-cd ~/pet-theory/lab06/firebase-frontend
-npm install && npm run build
-
+# Build the final production image
 gcloud builds submit \
-  --tag ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/$AR_REPO/frontend-production:0.1 .
+  --tag ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/frontend-repo/frontend-production:0.1 .
 
-gcloud run deploy $FRONTEND_PRODUCTION_SERVICE \
-  --image ${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/$AR_REPO/frontend-production:0.1 \
-  --set-env-vars REST_API_SERVICE=$SERVICE_URL \
-  --allow-unauthenticated \
-  --max-instances=1 \
-  --region=$REGION
+# Deploy the live production application
+gcloud run deploy frontend-production-service \
+    --image=${REGION}-docker.pkg.dev/$DEVSHELL_PROJECT_ID/frontend-repo/frontend-production:0.1 \
+    --platform=managed \
+    --region=$REGION \
+    --allow-unauthenticated \
+    --max-instances=1
 
-PROD_URL=$(gcloud run services describe $FRONTEND_PRODUCTION_SERVICE \
-  --region=$REGION --format='value(status.url)')
-echo "${GREEN_TEXT}Production frontend URL: $PROD_URL${RESET_FORMAT}"
-
-# ── Summary ───────────────────────────────────────────────────────────────────
+PROD_URL=$(gcloud run services describe frontend-production-service \
+  --region=$REGION \
+  --format='value(status.url)')
+  
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}=======================================================${RESET_FORMAT}"
 echo "${CYAN_TEXT}${BOLD_TEXT}              LAB COMPLETED SUCCESSFULLY!              ${RESET_FORMAT}"
