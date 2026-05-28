@@ -15,7 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-wget -O SakshamXTech.sh "url"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Google%20Kubernetes%20Engine%20Pipeline%20using%20Cloud%20Build/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
