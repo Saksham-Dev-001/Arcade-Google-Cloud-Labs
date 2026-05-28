@@ -67,7 +67,7 @@ echo -e "\r${GREEN_TEXT}${BOLD_TEXT}✅ Repository setup completed!${RESET_FORMA
 echo "${MAGENTA_TEXT}${BOLD_TEXT}🔐 PHASE 4: IAM Configuration${RESET_FORMAT}"
 echo "${WHITE_TEXT}${BOLD_TEXT}Configuring Cloud Build service account permissions for container development...${RESET_FORMAT}"
 echo
-msg=$(echo "U3Vic2NyaWJlIHRvIERyIEFiaGlzaGVr" | base64 --decode)
+
 gcloud projects add-iam-policy-binding $PROJECT_ID \
 --member=serviceAccount:$(gcloud projects describe $PROJECT_ID \
 --format="value(projectNumber)")@cloudbuild.gserviceaccount.com --role="roles/container.developer"
@@ -81,10 +81,6 @@ gh api user -q ".login"
 GITHUB_USERNAME=$(gh api user -q ".login")
 git config --global user.name "${GITHUB_USERNAME}"
 git config --global user.email "${USER_EMAIL}"
-
-echo
-echo "${CYAN_TEXT}${BOLD_TEXT} $msg ${RESET_FORMAT}"
-echo
 
 echo "${YELLOW_TEXT}${BOLD_TEXT}☸️ PHASE 6: Kubernetes Cluster Deployment${RESET_FORMAT}"
 echo "${WHITE_TEXT}${BOLD_TEXT}Creating Google Kubernetes Engine cluster with optimized settings for development and production...${RESET_FORMAT}"
@@ -109,10 +105,6 @@ for file in sample-app/cloudbuild-dev.yaml sample-app/cloudbuild.yaml; do
   sed -i "s/<your-region>/${REGION}/g" "$file"
   sed -i "s/<your-zone>/${ZONE}/g" "$file"
 done
-
-echo
-echo "${CYAN_TEXT}${BOLD_TEXT} $msg ${RESET_FORMAT}"
-echo
 
 git init
 cd sample-app/
@@ -166,7 +158,7 @@ cd sample-app
 echo "${YELLOW_TEXT}${BOLD_TEXT}🏗️ PHASE 10: Container Image Build & Push${RESET_FORMAT}"
 echo "${WHITE_TEXT}${BOLD_TEXT}Building Docker image and pushing to Artifact Registry using Cloud Build...${RESET_FORMAT}"
 echo
-msg=$(echo "U3Vic2NyaWJlIHRvIERyIEFiaGlzaGVr" | base64 --decode)
+
 COMMIT_ID="$(git rev-parse --short=7 HEAD)"
 (gcloud builds submit --tag="${REGION}-docker.pkg.dev/${PROJECT_ID}/$REPO/hello-cloudbuild:${COMMIT_ID}" .) & spinner
 
@@ -217,9 +209,6 @@ echo "${WHITE_TEXT}${BOLD_TEXT}Creating LoadBalancer service for production depl
 echo
 (kubectl expose deployment production-deployment -n prod --name=prod-deployment-service --type=LoadBalancer --port 8080 --target-port 8080 > /dev/null 2>&1) & spinner
 
-echo
-echo "${CYAN_TEXT}${BOLD_TEXT} $msg ${RESET_FORMAT}"
-echo
 
 echo "${YELLOW_TEXT}${BOLD_TEXT}🔧 PHASE 14: Development v2.0 Enhancement${RESET_FORMAT}"
 echo "${WHITE_TEXT}${BOLD_TEXT}Implementing new features in development branch with red handler functionality...${RESET_FORMAT}"
@@ -250,9 +239,6 @@ echo "${WHITE_TEXT}${BOLD_TEXT}Deploying development v2.0..."
 (gcloud builds submit --config=cloudbuild-dev.yaml . > /dev/null 2>&1) & spinner
 echo -e "\r${GREEN_TEXT}${BOLD_TEXT}✅ Development v2.0 deployment completed!${RESET_FORMAT}"
 
-echo
-echo "${CYAN_TEXT}${BOLD_TEXT} $msg ${RESET_FORMAT}"
-echo
 echo "${MAGENTA_TEXT}${BOLD_TEXT}🎯 PHASE 15: Production v2.0 Deployment${RESET_FORMAT}"
 echo "${WHITE_TEXT}${BOLD_TEXT}Merging new features to production branch and updating deployment configurations...${RESET_FORMAT}"
 echo
