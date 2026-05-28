@@ -20,46 +20,7 @@ sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
 ```
-```bash
-export PROJECT_ID=$(gcloud config get-value project)
-export SA_EMAIL=$(gcloud iam service-accounts list --filter="NOT email ~ .*@developer.gserviceaccount.com" --format="value(email)" | head -n 1)
 
-echo "Using Service Account: $SA_EMAIL"
-```
-```bash
-export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/credentials.json
-gsutil cp gs://$PROJECT_ID/analyze-images-v2.py .
-```
- > TBD: Create a Vision API image object called image_object
-```bash
-image_object = vision.Image(content=file_content)
-response = vision_client.text_detection(image=image_object)
-```
- > TBD: According to the target language pass the description data to the translation API
-```bash
-translation = translate_client.translate(desc, target_language='en')
-```
-```bash
-export PROJECT_ID=$(gcloud config get-value project)
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:$SA_EMAIL" \
-    --role="roles/serviceusage.serviceUsageConsumer"
-```
-```bash
-gcloud iam service-accounts keys create credentials.json \
-    --iam-account=$SA_EMAIL
-
-export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/credentials.json
-python3 analyze-images-v2.py $PROJECT_ID $PROJECT_ID
-```
-```bash
-bq query --use_legacy_sql=false \
-'SELECT locale, COUNT(locale) as lcount 
-FROM `image_classification_dataset.image_text_detail` 
-GROUP BY locale 
-ORDER BY lcount DESC'
-```
 </div>
 
 ---
