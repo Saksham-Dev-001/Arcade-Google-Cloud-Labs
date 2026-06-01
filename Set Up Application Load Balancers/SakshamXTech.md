@@ -1,4 +1,4 @@
-# 🌐 Set Up Network Load Balancers || GSP007 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.skills.google/games/7225/labs/44708)
+# 🌐 Set Up Application Load Balancers || GSP155 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.skills.google/games/7225/labs/44709)
 
 ## ⚠️ Disclaimer ⚠️
 
@@ -14,8 +14,9 @@
 
 ## ☁️ Run in Cloud Shell:
 
+
 ```bash
-wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Set%20Up%20Network%20Load%20Balancers/SakshamXTech.sh"
+wget -O SakshamXTech.sh "RAW_GITHUB_URL"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
