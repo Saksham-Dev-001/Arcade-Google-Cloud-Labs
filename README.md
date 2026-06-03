@@ -44,4 +44,4 @@ Participants can also earn exciting swags by completing selected Google Cloud la
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Saksham%20Sharma-blue?logo=linkedin)]([https://www.linkedin.com/in/saksham-sharma-674a32294])
 [![GitHub](https://img.shields.io/badge/GitHub-Saksham%20Sharma-black?logo=github)](https://github.com/Saksham-Dev-001)
-[![YouTube](https://img.shields.io/badge/YouTube-Saksham%20&%20XTech-red?logo=youtube)](https://www.youtube.com/@sakshamxtech)
+[![YouTube](https://img.shields.io/badge/YouTube-SakshamXTech-red?logo=youtube)](https://www.youtube.com/@sakshamxtech)
