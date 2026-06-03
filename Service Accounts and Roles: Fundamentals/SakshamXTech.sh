@@ -55,8 +55,6 @@ echo
 
 echo "${BLUE_TEXT}${BOLD_TEXT}⚡ Cloud Environment Initialized Successfully${RESET_FORMAT}"
 
-subscribe_message
-
 # =========================================================
 # SERVICE ACCOUNT SETUP
 # =========================================================

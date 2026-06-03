@@ -15,10 +15,6 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-gcloud config set project 
-```
-
-```bash
 wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Prepare%20Data%20for%20ML%20APIs%20on%20Google%20Cloud%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
