@@ -25,75 +25,227 @@ echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech - INITIATING EXECUTIO
 echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
 echo
 
+echo "${GREEN_TEXT}${BOLD_TEXT}=== INITIATING CLOUD CONFIGURATION ===${RESET_FORMAT}"
+echo
+
+echo "${YELLOW_TEXT}${BOLD_TEXT}👤 Listing Active GCP Accounts...${RESET_FORMAT}"
 gcloud auth list
-export PROJECT_ID=$(gcloud config get-value project)
-export ZONE=$(gcloud compute project-info describe --format="value(commonInstanceMetadata.items[google-compute-default-zone])")
-export REGION=$(gcloud compute project-info describe --format="value(commonInstanceMetadata.items[google-compute-default-region])")
-gcloud iam service-accounts create my-sa-123 --display-name "subscribe to techcos"
-gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member serviceAccount:my-sa-123@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --role roles/editor
-gcloud iam service-accounts create bigquery-qwiklab --description="subscribe to techcps" --display-name="bigquery-qwiklab"
-gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member="serviceAccount:bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" --role="roles/bigquery.dataViewer"
-gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID --member="serviceAccount:bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" --role="roles/bigquery.user"
-gcloud compute instances create bigquery-instance --project=$DEVSHELL_PROJECT_ID --zone=$ZONE --machine-type=e2-medium --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default --metadata=enable-oslogin=true --maintenance-policy=MIGRATE --provisioning-model=STANDARD --service-account=bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/bigquery,https://www.googleapis.com/auth/cloud-platform --create-disk=auto-delete=yes,boot=yes,device-name=bigquery-instance,image-family=debian-12,image-project=debian-cloud,mode=rw,size=10,type=projects/$DEVSHELL_PROJECT_ID/zones/$ZONE/diskTypes/pd-balanced --no-shielded-secure-boot --shielded-vtpm --shielded-integrity-monitoring --labels=goog-ec-src=vm_add-gcloud --reservation-affinity=any
 
-sleep 20
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}🔧 Detecting Lab Configuration...${RESET_FORMAT}"
 
-cat > cp_disk.sh <<'EOF_CP'
+export DEVSHELL_PROJECT_ID=$(gcloud config get-value project)
+export PROJECT_ID=$DEVSHELL_PROJECT_ID
+
+export ZONE=$(gcloud compute project-info describe \
+--format="value(commonInstanceMetadata.items[google-compute-default-zone])")
+
+export REGION=$(gcloud compute project-info describe \
+--format="value(commonInstanceMetadata.items[google-compute-default-region])")
+
+# Apply configuration
+gcloud config set compute/zone $ZONE --quiet
+gcloud config set compute/region $REGION --quiet
+
+echo
+echo "${GREEN_TEXT}${BOLD_TEXT}✅ Project ID:${RESET_FORMAT} ${CYAN_TEXT}$PROJECT_ID${RESET_FORMAT}"
+echo "${GREEN_TEXT}${BOLD_TEXT}✅ Region:${RESET_FORMAT} ${CYAN_TEXT}$REGION${RESET_FORMAT}"
+echo "${GREEN_TEXT}${BOLD_TEXT}✅ Zone:${RESET_FORMAT} ${CYAN_TEXT}$ZONE${RESET_FORMAT}"
+echo
+
+echo "${BLUE_TEXT}${BOLD_TEXT}⚡ Cloud Environment Initialized Successfully${RESET_FORMAT}"
+
+subscribe_message
+
+# =========================================================
+# SERVICE ACCOUNT SETUP
+# =========================================================
+
+echo
+echo "${MAGENTA_TEXT}${BOLD_TEXT}=== SERVICE ACCOUNT SETUP ===${RESET_FORMAT}"
+echo
+
+echo "${YELLOW_TEXT}${BOLD_TEXT}👤 Creating Service Account: my-sa-123${RESET_FORMAT}"
+
+gcloud iam service-accounts create my-sa-123 \
+    --display-name="My Service Account" \
+    --quiet
+
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}🔑 Granting Editor Role...${RESET_FORMAT}"
+
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+    --member="serviceAccount:my-sa-123@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/editor" \
+    --quiet
+
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}👤 Creating BigQuery Service Account...${RESET_FORMAT}"
+
+gcloud iam service-accounts create bigquery-qwiklab \
+    --display-name="bigquery-qwiklab" \
+    --quiet
+
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}🔑 Assigning BigQuery Roles...${RESET_FORMAT}"
+
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+    --member="serviceAccount:bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/bigquery.dataViewer" \
+    --quiet
+
+gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+    --member="serviceAccount:bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" \
+    --role="roles/bigquery.user" \
+    --quiet
+
+# =========================================================
+# VM CREATION
+# =========================================================
+
+echo
+echo "${MAGENTA_TEXT}${BOLD_TEXT}=== COMPUTE ENGINE VM SETUP ===${RESET_FORMAT}"
+echo
+
+echo "${YELLOW_TEXT}${BOLD_TEXT}💻 Creating VM Instance...${RESET_FORMAT}"
+
+gcloud compute instances create bigquery-instance \
+    --project=$DEVSHELL_PROJECT_ID \
+    --zone=$ZONE \
+    --machine-type=e2-medium \
+    --image-family=debian-12 \
+    --image-project=debian-cloud \
+    --service-account=bigquery-qwiklab@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com \
+    --scopes=https://www.googleapis.com/auth/cloud-platform \
+    --quiet
+
+# =========================================================
+# SPINNER
+# =========================================================
+
+echo
+echo "${BLUE_TEXT}${BOLD_TEXT}⏳ Waiting for VM Initialization...${RESET_FORMAT}"
+
+spinner="/-\|"
+
+messages=(
+"Preparing VM..."
+"Installing Components..."
+)
+
+for i in {1..20}; do
+    msg=${messages[$((i % ${#messages[@]}))]}
+    printf "\r${CYAN_TEXT}${BOLD_TEXT}[${spinner:i%4:1}] $msg${RESET_FORMAT}"
+    sleep 1
+done
+
+printf "\n"
+
+# =========================================================
+# CREATE REMOTE SCRIPT
+# =========================================================
+
+echo
+echo "${MAGENTA_TEXT}${BOLD_TEXT}=== PREPARING BIGQUERY SCRIPT ===${RESET_FORMAT}"
+echo
+
+cat > cp_disk.sh << 'EOF'
 #!/bin/bash
 
-# Install required packages
-sudo apt-get update
-sudo apt-get install -y git python3-pip
+echo "Updating packages..."
+sudo apt-get update -y
 
-sudo apt install python3 python3-pip python3.11-venv -y
+echo "Installing dependencies..."
+sudo apt-get install -y python3 python3-pip python3-venv git
 
+echo "Creating Python virtual environment..."
 python3 -m venv myvenv
+
 source myvenv/bin/activate
 
-# Upgrade pip and install Python libraries
-pip3 install --upgrade pip
-pip3 install google-cloud-bigquery
-pip3 install pyarrow
-pip3 install pandas
-pip3 install db-dtypes
+echo "Upgrading pip..."
+pip install --upgrade pip
 
-cat > query.py <<'EOF_PY'
+echo "Installing BigQuery libraries..."
+pip install google-cloud-bigquery pyarrow pandas db-dtypes
+
+echo "Creating Python query file..."
+
+cat > query.py << 'PYEOF'
 from google.auth import compute_engine
 from google.cloud import bigquery
 
 credentials = compute_engine.Credentials(
-    service_account_email='YOUR_SERVICE_ACCOUNT')
+    service_account_email='YOUR_SERVICE_ACCOUNT'
+)
 
 query = '''
 SELECT
   year,
-  COUNT(1) as num_babies
+  COUNT(1) AS num_babies
 FROM
   publicdata.samples.natality
 WHERE
   year > 2000
 GROUP BY
   year
+ORDER BY
+  year
 '''
 
 client = bigquery.Client(
     project='PROJECT_ID',
-    credentials=credentials)
-print(client.query(query).to_dataframe())
-EOF_PY
+    credentials=credentials
+)
 
-sed -i -e "s/PROJECT_ID/$(gcloud config get-value project)/g" query.py
 
-sed -i -e "s/YOUR_SERVICE_ACCOUNT/bigquery-qwiklab@$(gcloud config get-value project).iam.gserviceaccount.com/g" query.py
+print("Executing Query...\n")
+
+df = client.query(query).to_dataframe()
+
+print(df.to_string(index=False))
+PYEOF
+
+# Replace Variables
+
+sed -i "s/PROJECT_ID/$(gcloud config get-value project)/g" query.py
+
+sed -i "s/YOUR_SERVICE_ACCOUNT/bigquery-qwiklab@$(gcloud config get-value project).iam.gserviceaccount.com/g" query.py
+
+echo
+echo "Running BigQuery Query..."
+echo
 
 python3 query.py
 
-EOF_CP
+EOF
 
-gcloud compute scp cp_disk.sh bigquery-instance:/tmp --project=$DEVSHELL_PROJECT_ID --zone=$ZONE --quiet
-gcloud compute ssh bigquery-instance --project=$DEVSHELL_PROJECT_ID --zone=$ZONE --quiet --command="bash /tmp/cp_disk.sh"
+# =========================================================
+# COPY FILE TO VM
+# =========================================================
 
-# Final message
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}📤 Copying Script to VM...${RESET_FORMAT}"
+
+gcloud compute scp cp_disk.sh bigquery-instance:/tmp \
+    --project=$DEVSHELL_PROJECT_ID \
+    --zone=$ZONE \
+    --quiet
+
+# =========================================================
+# EXECUTE SCRIPT
+# =========================================================
+
+echo
+echo "${YELLOW_TEXT}${BOLD_TEXT}🚀 Executing Script on VM...${RESET_FORMAT}"
+
+gcloud compute ssh bigquery-instance \
+    --project=$DEVSHELL_PROJECT_ID \
+    --zone=$ZONE \
+    --quiet \
+    --command="chmod +x /tmp/cp_disk.sh && /tmp/cp_disk.sh"
+
+
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}=======================================================${RESET_FORMAT}"
 echo "${CYAN_TEXT}${BOLD_TEXT}              LAB COMPLETED SUCCESSFULLY!              ${RESET_FORMAT}"
