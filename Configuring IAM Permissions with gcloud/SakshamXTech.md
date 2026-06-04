@@ -15,12 +15,6 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-export ZONE=$(gcloud compute project-info describe \
---format="value(commonInstanceMetadata.items[google-compute-default-zone])")
-gcloud compute ssh centos-clean --zone=$ZONE --quiet
-```
-
-```bash
 wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Configuring%20IAM%20Permissions%20with%20gcloud/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
