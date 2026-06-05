@@ -369,22 +369,22 @@ explore: events {
 ## 🎉 **Congratulations! Lab Completed Successfully!** 🏆  
 
 <div style="text-align:center; padding: 10px 0; max-width: 640px; margin: 0 auto;">
-  <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-bottom: 14px;">📱 Join the Tech & Code Community</h3>
+  <h3 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-bottom: 14px;">📱 Join the SakshamXTech Community</h3>
 
-  <a href="https://www.youtube.com/@TechCode9?sub_confirmation=1" style="margin: 0 6px; display: inline-block;">
-    <img src="https://img.shields.io/badge/Subscribe-Tech%20&%20Code-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel">
+<a href="https://www.youtube.com/@sakshamxtech?sub_confirmation=1" style="margin: 0 6px; display: inline-block;">
+    <img src="https://img.shields.io/badge/Subscribe-SakshamXTech-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube Channel">
   </a>
 
-  <a href="https://www.linkedin.com/in/prateekrajput08/" style="margin: 0 6px; display: inline-block;">
-    <img src="https://img.shields.io/badge/LinkedIn-Prateek%20Rajput-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Profile">
+  <a href="https://www.linkedin.com/in/saksham-sharma-674a32294" style="margin: 0 6px; display: inline-block;">
+    <img src="https://img.shields.io/badge/LinkedIn-Saksham%20Sharma-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Profile">
   </a>
 
-  <a href="https://t.me/techcode9" style="margin: 0 6px; display: inline-block;">
-    <img src="https://img.shields.io/badge/Telegram-Tech%20Code-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Channel">
+  <a href="https://t.me/sakshamxtech" style="margin: 0 6px; display: inline-block;">
+    <img src="https://img.shields.io/badge/Telegram-SakshamXTech-0088cc?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Channel">
   </a>
 
-  <a href="https://www.instagram.com/techcodefacilitator" style="margin: 0 6px; display: inline-block;">
-    <img src="https://img.shields.io/badge/Instagram-Tech%20Code-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram Profile">
+  <a href="https://www.instagram.com/@Saksham_021" style="margin: 0 6px; display: inline-block;">
+    <img src="https://img.shields.io/badge/Instagram-Saksham%20Sharma-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram Profile">
   </a>
 </div>
 
@@ -395,6 +395,6 @@ explore: events {
     <em>This guide is provided for educational purposes. Always follow Qwiklabs terms of service and YouTube's community guidelines.</em>
   </p>
   <p style="font-size: 12px; color: #586069;">
-    <em>Last updated: January 2026</em>
+    <em>Last updated: June 2026</em>
   </p>
 </div>
