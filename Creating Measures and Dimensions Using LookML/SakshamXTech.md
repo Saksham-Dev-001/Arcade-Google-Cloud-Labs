@@ -13,7 +13,7 @@
 
 <div style="padding: 15px; margin: 10px 0;">
 
-## Update View `user.view`:
+## Update View `users.view`:
 
 ```bash
 view: users {
