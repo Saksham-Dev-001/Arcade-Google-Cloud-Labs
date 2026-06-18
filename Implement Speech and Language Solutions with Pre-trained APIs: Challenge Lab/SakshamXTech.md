@@ -19,7 +19,7 @@ gcloud compute ssh lab-vm
 ```
 
 ```bash
-wget -O SakshamXTech.sh ""
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Implement%20Speech%20and%20Language%20Solutions%20with%20Pre-trained%20APIs%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
