@@ -15,9 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-export ZONE=$(gcloud compute project-info describe \
---format="value(commonInstanceMetadata.items[google-compute-default-zone])")
-gcloud compute ssh centos-clean --zone=$ZONE --quiet
+gcloud compute ssh centos-clean --zone=$(gcloud compute project-info describe --format="value(commonInstanceMetadata.items[google-compute-default-zone])") --quiet
 ```
 
 ```bash
