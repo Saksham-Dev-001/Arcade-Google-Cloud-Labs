@@ -19,10 +19,9 @@ gcloud compute ssh centos-clean --zone=$(gcloud compute project-info describe --
 ```
 
 ```bash
-wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Configuring%20IAM%20Permissions%20with%20gcloud/SakshamXTech.sh"
-sed -i 's/\r$//' SakshamXTech.sh
-chmod +x SakshamXTech.sh
-bash SakshamXTech.sh
+curl -LO raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Configuring%20IAM%20Permissions%20with%20gcloud/SakshamXTech.sh
+sudo chmod +x SakshamXTech.sh 
+./SakshamXTech.sh
 ```
 
 </div>
