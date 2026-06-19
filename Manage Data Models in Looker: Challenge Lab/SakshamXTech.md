@@ -268,7 +268,7 @@ explore: +order_items {
 ```bash
 explore: +order_items {
 
-    query: TechCode {
+    query: SakshamXTech {
       dimensions: [created_month]
       measures: [total_profit, total_revenue]
     }
