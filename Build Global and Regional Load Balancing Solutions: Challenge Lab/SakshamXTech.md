@@ -103,8 +103,7 @@ gcloud compute backend-services add-backend internal-proxy-backend \
     --region=$REGION_B
 ```
 Frontend:
-- Name: rule-internal-proxy
-- IP Address: ip-internal-proxy
+- Name: ip-internal-proxy
 - Protocol: TCP
 - Port: 110
 - Global Access: Disabled
