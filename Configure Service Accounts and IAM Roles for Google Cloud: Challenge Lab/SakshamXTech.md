@@ -1,4 +1,4 @@
-# 🌐 Cloud Operations for GKE || GSP497 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.cloudskillsboost.google/games/6557/labs/41137)
+# 🌐 Configure Service Accounts and IAM Roles for Google Cloud: Challenge Lab || ARC134 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.skills.google/games/7223/labs/44687)
 
 ## ⚠️ Disclaimer ⚠️
 
@@ -15,7 +15,7 @@
 ## ☁️ Run in Cloud Shell:
 
 ```bash
-wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Cloud%20Operations%20for%20GKE/SakshamXTech.sh"
+wget -O SakshamXTech.sh ""
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
@@ -54,6 +54,6 @@ bash SakshamXTech.sh
     <em>This guide is provided for educational purposes. Always follow Qwiklabs terms of service and YouTube's community guidelines.</em>
   </p>
   <p style="font-size: 12px; color: #586069;">
-    <em>Last updated: May 2026</em>
+    <em>Last updated: June 2026</em>
   </p>
 </div>
