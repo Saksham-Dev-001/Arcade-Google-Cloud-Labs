@@ -1,4 +1,4 @@
-# 🌐 Infrastructure as Code with Terraform || GSP750 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)] (https://www.skills.google/games/7313/labs/45035)
+# 🌐 Infrastructure as Code with Terraform || GSP750 🚀 [![Open Lab](https://img.shields.io/badge/Open-Lab-blue?style=flat)](https://www.skills.google/games/7313/labs/45035)
 
 ## ⚠️ Disclaimer ⚠️
 
