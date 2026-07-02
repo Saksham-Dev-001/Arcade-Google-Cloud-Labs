@@ -14,14 +14,15 @@
 
 ## ☁️ Run in Cloud Shell:
 
+```
+export ZONE=
+```
+
 ```bash
 wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Infrastructure%20as%20Code%20with%20Terraform/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
-```
-```bash
-terraform destroy
 ```
 </div>
 
