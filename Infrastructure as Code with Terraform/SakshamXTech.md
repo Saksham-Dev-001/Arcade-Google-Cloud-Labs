@@ -24,6 +24,11 @@ sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
 ```
+
+```
+terraform destroy
+```
+
 </div>
 
 ---
