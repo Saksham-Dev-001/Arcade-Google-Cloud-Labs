@@ -26,9 +26,6 @@ If you’re interested in learning more about Google Cloud, I highly recommend c
 
 ## 🎁 Earn Exclusive Google Cloud Swags
 Participants can also earn exciting swags by completing selected Google Cloud labs, skill badges, and challenges. These swags may include goodies like T-shirts, stickers, certificates, and other exclusive rewards. They not only make learning more fun but also recognize your effort and achievements in Google Cloud learning.
-<p align="center">
-  <img src="https://github.com/prateekrajput08/TechCodeHub-Images/blob/main/Images/Swags.png?raw=true" alt="Swags" width="100%">
-</p>
 
 ## ⚠️ Disclaimer
 
