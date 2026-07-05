@@ -1,44 +1,44 @@
 #!/bin/bash
 
-BLACK_TEXT=$'\033[0;90m'
-RED_TEXT=$'\033[0;91m'
-GREEN_TEXT=$'\033[0;92m'
-YELLOW_TEXT=$'\033[0;93m'
-BLUE_TEXT=$'\033[0;94m'
-MAGENTA_TEXT=$'\033[0;95m'
-CYAN_TEXT=$'\033[0;96m'
-WHITE_TEXT=$'\033[0;97m'
-TEAL_TEXT=$'\033[38;5;50m'
-PURPLE_TEXT=$'\033[0;35m'
-GOLD_TEXT=$'\033[0;33m'
-LIME_TEXT=$'\033[0;92m'
-MAROON_TEXT=$'\033[0;91m'
-NAVY_TEXT=$'\033[0;94m'
+BLACK=`tput setaf 0`
+RED=`tput setaf 1`
+GREEN=`tput setaf 2`
+YELLOW=`tput setaf 3`
+BLUE=`tput setaf 4`
+MAGENTA=`tput setaf 5`
+CYAN=`tput setaf 6`
+WHITE=`tput setaf 7`
 
-BOLD_TEXT=$'\033[1m'
-UNDERLINE_TEXT=$'\033[4m'
-BLINK_TEXT=$'\033[5m'
-NO_COLOR=$'\033[0m'
-RESET_FORMAT=$'\033[0m'
-REVERSE_TEXT=$'\033[7m'
+BG_BLACK=`tput setab 0`
+BG_RED=`tput setab 1`
+BG_GREEN=`tput setab 2`
+BG_YELLOW=`tput setab 3`
+BG_BLUE=`tput setab 4`
+BG_MAGENTA=`tput setab 5`
+BG_CYAN=`tput setab 6`
+BG_WHITE=`tput setab 7`
+
+BOLD=`tput bold`
+RESET=`tput sgr0`
 
 clear
 
 # Welcome message
 echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
-echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech- INITIATING EXECUTION...  ${RESET_FORMAT}"
+echo "${CYAN_TEXT}${BOLD_TEXT}         SUBSCRIBE SakshamXTech- INITIATING EXECUTION...          ${RESET_FORMAT}"
 echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
 echo
 
-# Set the project ID
-export PROJECT_ID=$(gcloud config get-value project)
+export PROJECT_ID=$(gcloud info --format='value(config.project)')
 
-# Task 1: Create a dataset and table
-bq mk $PROJECT_ID:fruit_store
-bq mk --table --description "Table for fruit details" $PROJECT_ID:fruit_store.fruit_details
-bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect $PROJECT_ID:fruit_store.fruit_details gs://data-insights-course/labs/optimizing-for-performance/shopping_cart.json
+bq mk fruit_store
 
-# Task 2: Run a query with arrays
+bq mk --table --description "Table for fruit details" $DEVSHELL_PROJECT_ID:fruit_store.fruit_details
+
+bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect $DEVSHELL_PROJECT_ID:fruit_store.fruit_details gs://data-insights-course/labs/optimizing-for-performance/shopping_cart.json
+
+echo "${GREEN}${BOLD}Task 2. Practice working with arrays in SQL Completed ${RESET}"
+
 bq query --use_legacy_sql=false \
 "
 SELECT
@@ -48,13 +48,14 @@ SELECT
   ARRAY_LENGTH(ARRAY_AGG(DISTINCT v2ProductName)) AS distinct_products_viewed,
   ARRAY_AGG(DISTINCT pageTitle) AS pages_viewed,
   ARRAY_LENGTH(ARRAY_AGG(DISTINCT pageTitle)) AS distinct_pages_viewed
-FROM \`data-to-insights.ecommerce.all_sessions\`
+  FROM \`data-to-insights.ecommerce.all_sessions\`
 WHERE visitId = 1501570398
 GROUP BY fullVisitorId, date
-ORDER BY date;
+ORDER BY date
 "
 
-# Task 3: Query tables containing arrays
+echo "${GREEN}${BOLD}Task 3. Create your own arrays with ARRAY_AGG() Completed${RESET}"
+
 bq query --use_legacy_sql=false \
 "
 SELECT DISTINCT
@@ -63,10 +64,11 @@ SELECT DISTINCT
 FROM \`bigquery-public-data.google_analytics_sample.ga_sessions_20170801\`,
 UNNEST(hits) AS h
 WHERE visitId = 1501570398
-LIMIT 10;
+LIMIT 10
 "
 
-# Task 4: Create schema for a new table
+echo "${GREEN}${BOLD}Task 4. Query tables containing arrays Completed${RESET}"
+
 echo '[
     {
         "name": "race",
@@ -92,26 +94,31 @@ echo '[
     }
 ]' > schema.json
 
-bq mk $PROJECT_ID:racing
-bq mk --table --schema=schema.json --description "Table for race details" $PROJECT_ID:racing.race_results
-bq load --source_format=NEWLINE_DELIMITED_JSON --schema=schema.json $PROJECT_ID:racing.race_results gs://data-insights-course/labs/optimizing-for-performance/race_results.json
 
-# Task 5: Practice with STRUCTs and arrays
+bq mk racing
+
+bq mk --table --schema=schema.json --description "Table for race details" $DEVSHELL_PROJECT_ID:racing.race_results 
+
+bq load --source_format=NEWLINE_DELIMITED_JSON --schema=schema.json $DEVSHELL_PROJECT_ID:racing.race_results gs://data-insights-course/labs/optimizing-for-performance/race_results.json
+
+echo "${GREEN}${BOLD}Task 6. Practice with STRUCTs and arrays Completed${RESET}"
+
 bq query --use_legacy_sql=false \
 "
 #standardSQL
 SELECT COUNT(p.name) AS racer_count
-FROM \`$PROJECT_ID.racing.race_results\` AS r, UNNEST(r.participants) AS p;
+FROM racing.race_results AS r, UNNEST(r.participants) AS p
 "
 
-# Task 6: Unpacking arrays with UNNEST()
+echo "${GREEN}${BOLD}Task 7. Lab question: STRUCT() Completed${RESET}"
+
 bq query --use_legacy_sql=false \
 "
 #standardSQL
 SELECT
   p.name,
   SUM(split_times) as total_race_time
-FROM \`$PROJECT_ID.racing.race_results\` AS r
+FROM racing.race_results AS r
 , UNNEST(r.participants) AS p
 , UNNEST(p.splits) AS split_times
 WHERE p.name LIKE 'R%'
@@ -119,18 +126,21 @@ GROUP BY p.name
 ORDER BY total_race_time ASC;
 "
 
-# Task 7: Find specific split time
+echo "${GREEN}${BOLD}Task 8. Lab question: Unpacking arrays with UNNEST( ) Completed${RESET}"
+
 bq query --use_legacy_sql=false \
 "
 #standardSQL
 SELECT
   p.name,
   split_time
-FROM \`$PROJECT_ID.racing.race_results\` AS r
+FROM racing.race_results AS r
 , UNNEST(r.participants) AS p
 , UNNEST(p.splits) AS split_time
 WHERE split_time = 23.2;
 "
+
+echo "${GREEN}${BOLD}Task 9. Filter within array values Completed${RESET}"
 
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}=======================================================${RESET_FORMAT}"
