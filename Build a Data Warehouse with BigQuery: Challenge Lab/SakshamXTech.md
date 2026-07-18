@@ -17,7 +17,7 @@
 ## ⚠️Make sure to check Task 2 Shows Like As Shown In Video if it doesn't then simply restart the lab
 
 ```bash
-wget -O SakshamXTech.sh "RAW_GITHUB_URL"
+wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Build%20a%20Data%20Warehouse%20with%20BigQuery%3A%20Challenge%20Lab/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
 chmod +x SakshamXTech.sh
 bash SakshamXTech.sh
