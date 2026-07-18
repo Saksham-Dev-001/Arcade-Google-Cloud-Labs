@@ -13,7 +13,11 @@
 <div style="padding: 15px; margin: 10px 0;">
 
 ## ☁️ Run in Cloud Shell:
-
+```bash
+export HTTP_FUNCTION=
+export FUNCTION_NAME=
+export REGION=
+```
 ```bash
 wget -O SakshamXTech.sh "https://raw.githubusercontent.com/Saksham-Dev-001/Arcade-Google-Cloud-Labs/refs/heads/main/Build%20Serverless%20Applications%20with%20Cloud%20Run%20Functions%3A%20Challenge%20Lab%5C/SakshamXTech.sh"
 sed -i 's/\r$//' SakshamXTech.sh
