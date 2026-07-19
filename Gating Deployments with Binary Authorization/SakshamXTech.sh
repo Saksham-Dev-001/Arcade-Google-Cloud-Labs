@@ -1,75 +1,67 @@
 #!/bin/bash
 
-BLACK_TEXT=$'\033[0;90m'
-RED_TEXT=$'\033[0;91m'
-GREEN_TEXT=$'\033[0;92m'
-YELLOW_TEXT=$'\033[0;93m'
-BLUE_TEXT=$'\033[0;94m'
-MAGENTA_TEXT=$'\033[0;95m'
-CYAN_TEXT=$'\033[0;96m'
-WHITE_TEXT=$'\033[0;97m'
-TEAL_TEXT=$'\033[38;5;50m'
-PURPLE_TEXT=$'\033[0;35m'
-GOLD_TEXT=$'\033[0;33m'
-LIME_TEXT=$'\033[0;92m'
-MAROON_TEXT=$'\033[0;91m'
-NAVY_TEXT=$'\033[0;94m'
+# ==========================================
+# COLOR & FORMATTING DEFINITIONS
+# ==========================================
+BOLD_TEXT="\033[1m"
+RESET_FORMAT="\033[0m"
+BLUE_TEXT="\033[1;34m"
+CYAN_TEXT="\033[1;36m"
+GREEN_TEXT="\033[1;32m"
+RED_TEXT="\033[1;31m"
+WHITE_TEXT="\033[1;37m"
+YELLOW_TEXT="\033[1;33m"
 
-BOLD_TEXT=$'\033[1m'
-UNDERLINE_TEXT=$'\033[4m'
-BLINK_TEXT=$'\033[5m'
-NO_COLOR=$'\033[0m'
-RESET_FORMAT=$'\033[0m'
-REVERSE_TEXT=$'\033[7m'
+# UI Helper functions
+print_step() {
+    echo -e "\n${CYAN_TEXT}${BOLD_TEXT}🚀 [TASK] $1${RESET_FORMAT}"
+    echo -e "${CYAN_TEXT}─────────────────────────────────────────────────────────────────${RESET_FORMAT}"
+}
 
-clear
+print_info() {
+    echo -e "${BLUE_TEXT}ℹ️  $1${RESET_FORMAT}"
+}
 
-# Welcome Message
+# Welcome message
 echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
-echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech- INITIATING EXECUTION...  ${RESET_FORMAT}"
+echo "${CYAN_TEXT}${BOLD_TEXT}      SUBSCRIBE SakshamXTech - INITIATING EXECUTION...  ${RESET_FORMAT}"
 echo "${CYAN_TEXT}${BOLD_TEXT}==================================================================${RESET_FORMAT}"
 echo
-
-echo "Starting lab setup in 5 seconds..."
-sleep 5
 
 # Function to validate project ID
 validate_project_id() {
   local project_id=$1
   if [[ -z "$project_id" ]]; then
-    echo "Error: PROJECT_ID is not set."
+    echo -e "${RED_TEXT}❌ Error: PROJECT_ID is not set. Please authenticate or set your active project.${RESET_FORMAT}"
     exit 1
   fi
 }
 
 # Function to set zone and region
 set_zone_and_region() {
-  # Try to detect zone from gcloud config
   ZONE=$(gcloud config get-value compute/zone 2>/dev/null)
   REGION=$(gcloud config get-value compute/region 2>/dev/null)
   
-  # If not set, prompt user
   if [[ -z "$ZONE" ]]; then
-    echo "Zone not set in gcloud config."
-    read -p "Enter your zone (e.g., us-central1-c): " ZONE
+    echo -e "${YELLOW_TEXT}⚠️  Zone not detected in gcloud config.${RESET_FORMAT}"
+    read -p "👉 Enter your zone (e.g., us-central1-c): " ZONE
   fi
   
   if [[ -z "$REGION" ]]; then
-    # Derive region from zone if not set
     if [[ -n "$ZONE" ]]; then
       REGION=$(echo $ZONE | awk -F'-' '{print $1"-"$2}')
     else
-      read -p "Enter your region (e.g., us-central1): " REGION
+      read -p "👉 Enter your region (e.g., us-central1): " REGION
     fi
   fi
   
   export ZONE
   export REGION
-  echo "Using zone: $ZONE and region: $REGION"
+  echo -e "${GREEN_TEXT}✅ Context set -> Zone: ${BOLD_TEXT}$ZONE${RESET_FORMAT}${GREEN_TEXT} | Region: ${BOLD_TEXT}$REGION${RESET_FORMAT}"
 }
 
-# Main script
-echo "Starting lab setup..."
+# Main script execution
+print_info "Initializing context variables..."
 
 # Set project variables
 export PROJECT_ID=$(gcloud config get-value project)
@@ -79,8 +71,8 @@ export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(pro
 # Set zone and region
 set_zone_and_region
 
-# Enable services
-echo "Enabling required services..."
+print_step "Enabling Required Google Cloud Services"
+print_info "This might take a moment if services are fresh..."
 gcloud services enable \
   cloudkms.googleapis.com \
   cloudbuild.googleapis.com \
@@ -92,17 +84,19 @@ gcloud services enable \
   binaryauthorization.googleapis.com
 
 # Task 1: Create Artifact Registry repository
-echo "Creating Artifact Registry repository..."
+print_step "Creating Artifact Registry Repository"
 gcloud artifacts repositories create artifact-scanning-repo \
   --repository-format=docker \
   --location=$REGION \
   --description="Docker repository"
 
+print_info "Configuring Docker authentication..."
 gcloud auth configure-docker ${REGION}-docker.pkg.dev
 
 mkdir -p vuln-scan && cd vuln-scan
 
 # Create Dockerfile
+print_info "Writing Dockerfile application manifests..."
 cat > ./Dockerfile << EOF
 FROM python:3.8-alpine  
 
@@ -133,11 +127,11 @@ if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 EOF
 
-# Build and push image
+print_info "Submitting build payload to Cloud Build..."
 gcloud builds submit . -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/artifact-scanning-repo/sample-image
 
 # Task 2: Image Signing
-echo "Setting up image signing..."
+print_step "Setting up Binary Authorization Attestor Structures"
 
 # Create note
 cat > ./vulnz_note.json << EOM
@@ -152,6 +146,7 @@ EOM
 
 NOTE_ID=vulnz_note
 
+print_info "Registering Container Analysis Note..."
 curl -X POST \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -161,6 +156,7 @@ curl -X POST \
 # Create attestor
 ATTESTOR_ID=vulnz-attestor
 
+print_info "Creating Container Binary Authorization Attestor..."
 gcloud container binauthz attestors create $ATTESTOR_ID \
     --attestation-authority-note=$NOTE_ID \
     --attestation-authority-note-project=${PROJECT_ID}
@@ -184,6 +180,7 @@ cat > ./iam_request.json << EOM
 }
 EOM
 
+print_info "Applying IAM Occurrences Viewer Bindings..."
 curl -X POST \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $(gcloud auth print-access-token)" \
@@ -191,20 +188,23 @@ curl -X POST \
     "https://containeranalysis.googleapis.com/v1/projects/${PROJECT_ID}/notes/${NOTE_ID}:setIamPolicy"
 
 # Task 3: Adding a KMS key
-echo "Setting up KMS key..."
+print_step "Provisioning Cloud KMS Asymmetric Keys"
 
 KEY_LOCATION=global
 KEYRING=binauthz-keys
 KEY_NAME=codelab-key
 KEY_VERSION=1
 
+print_info "Creating Keyring..."
 gcloud kms keyrings create "${KEYRING}" --location="${KEY_LOCATION}"
 
+print_info "Generating asymmetric-signing cryptographic key..."
 gcloud kms keys create "${KEY_NAME}" \
     --keyring="${KEYRING}" --location="${KEY_LOCATION}" \
     --purpose asymmetric-signing \
     --default-algorithm="ec-sign-p256-sha256"
 
+print_info "Linking public key configuration to the Attestor..."
 gcloud beta container binauthz attestors public-keys add \
     --attestor="${ATTESTOR_ID}" \
     --keyversion-project="${PROJECT_ID}" \
@@ -214,11 +214,12 @@ gcloud beta container binauthz attestors public-keys add \
     --keyversion="${KEY_VERSION}"
 
 # Task 4: Creating a signed attestation
-echo "Creating signed attestation..."
+print_step "Generating Manual Cryptographic Attestation Baseline"
 
 CONTAINER_PATH=${REGION}-docker.pkg.dev/${PROJECT_ID}/artifact-scanning-repo/sample-image
 DIGEST=$(gcloud container images describe ${CONTAINER_PATH}:latest --format='get(image_summary.digest)')
 
+print_info "Signing image digest reference payload..."
 gcloud beta container binauthz attestations sign-and-create \
     --artifact-url="${CONTAINER_PATH}@${DIGEST}" \
     --attestor="${ATTESTOR_ID}" \
@@ -230,18 +231,19 @@ gcloud beta container binauthz attestations sign-and-create \
     --keyversion="${KEY_VERSION}"
 
 # Task 5: Admission control policies
-echo "Setting up GKE cluster with Binary Authorization..."
+print_step "Bootstrapping GKE Cluster with Enforced Enforcement Mode"
 
 gcloud beta container clusters create binauthz \
     --zone $ZONE \
     --binauthz-evaluation-mode=PROJECT_SINGLETON_POLICY_ENFORCE
 
+print_info "Authorizing Cloud Build execution permissions..."
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
     --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
     --role="roles/container.developer"
 
 # Task 6: Automatically signing images
-echo "Configuring automatic image signing..."
+print_step "Configuring Continuous Integration Automation Roles"
 
 # Add required roles
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
@@ -268,7 +270,7 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
   --role="roles/ondemandscanning.admin"
 
-# Prepare custom build step
+print_info "Building downstream custom attestation step builder..."
 git clone https://github.com/GoogleCloudPlatform/cloud-builders-community.git
 cd cloud-builders-community/binauthz-attestation
 gcloud builds submit . --config cloudbuild.yaml
@@ -276,6 +278,7 @@ cd ../..
 rm -rf cloud-builders-community
 
 # Create cloudbuild.yaml
+print_info "Assembling structural cloudbuild.yaml pipeline..."
 cat > ./cloudbuild.yaml << EOF
 steps:
 # build
@@ -311,11 +314,11 @@ images:
   - ${REGION}-docker.pkg.dev/${PROJECT_ID}/artifact-scanning-repo/sample-image:good
 EOF
 
-# Run the build
+print_info "Executing automated deployment pipeline run..."
 gcloud builds submit
 
 # Task 7: Authorizing signed images
-echo "Updating GKE policy to require attestation..."
+print_step "Updating Cluster Policies & Deploying Compliant Image"
 
 cat > binauth_policy.yaml << EOM
 defaultAdmissionRule:
@@ -375,10 +378,11 @@ spec:
             value: "8080"
 EOM
 
+print_info "Applying signed deployment manifest to cluster..."
 kubectl apply -f deploy.yaml
 
 # Task 8: Blocked unsigned Images
-echo "Testing blocked unsigned images..."
+print_step "Executing Gatekeeping Verification on Unsigned Manifests"
 
 docker build -t ${REGION}-docker.pkg.dev/${PROJECT_ID}/artifact-scanning-repo/sample-image:bad .
 docker push ${REGION}-docker.pkg.dev/${PROJECT_ID}/artifact-scanning-repo/sample-image:bad
@@ -422,8 +426,11 @@ spec:
             value: "8080"
 EOM
 
+print_info "Attempting deployment of unauthorized workspace context..."
 kubectl apply -f deploy.yaml
 
+
+# Completion message
 echo
 echo "${CYAN_TEXT}${BOLD_TEXT}=======================================================${RESET_FORMAT}"
 echo "${CYAN_TEXT}${BOLD_TEXT}              LAB COMPLETED SUCCESSFULLY!              ${RESET_FORMAT}"
@@ -431,3 +438,4 @@ echo "${CYAN_TEXT}${BOLD_TEXT}==================================================
 echo
 echo "${RED_TEXT}${BOLD_TEXT}${UNDERLINE_TEXT}https://www.youtube.com/@sakshamxtech${RESET_FORMAT}"
 echo "${GREEN_TEXT}${BOLD_TEXT}Don't forget to Like, Share and Subscribe for more Videos${RESET_FORMAT}"
+echo
